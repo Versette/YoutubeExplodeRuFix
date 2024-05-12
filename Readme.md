@@ -1,101 +1,63 @@
 # YoutubeExplode
 
-[![Status](https://img.shields.io/badge/status-maintenance-ffd700.svg)](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)
-[![Made in Ukraine](https://img.shields.io/badge/made_in-ukraine-ffd700.svg?labelColor=0057b7)](https://tyrrrz.me/ukraine)
-[![Build](https://img.shields.io/github/actions/workflow/status/Tyrrrz/YoutubeExplode/main.yml?branch=master)](https://github.com/Tyrrrz/YoutubeExplode/actions)
-[![Coverage](https://img.shields.io/codecov/c/github/Tyrrrz/YoutubeExplode/master)](https://codecov.io/gh/Tyrrrz/YoutubeExplode)
+[![Build](https://github.com/Tyrrrz/YoutubeExplode/workflows/main/badge.svg?branch=master)](https://github.com/Tyrrrz/YoutubeExplode/actions)
+[![Coverage](https://codecov.io/gh/Tyrrrz/YoutubeExplode/branch/master/graph/badge.svg)](https://codecov.io/gh/Tyrrrz/YoutubeExplode)
 [![Version](https://img.shields.io/nuget/v/YoutubeExplode.svg)](https://nuget.org/packages/YoutubeExplode)
 [![Downloads](https://img.shields.io/nuget/dt/YoutubeExplode.svg)](https://nuget.org/packages/YoutubeExplode)
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
-[![Fuck Russia](https://img.shields.io/badge/fuck-russia-e4181c.svg?labelColor=000000)](https://twitter.com/tyrrrz/status/1495972128977571848)
+[![Donate](https://img.shields.io/badge/donate-$$$-purple.svg)](https://tyrrrz.me/donate)
 
-<<<<<<< HEAD:Readme.md
-<table>
-    <tr>
-        <td width="99999" align="center">Development of this project is entirely funded by the community. <b><a href="https://tyrrrz.me/donate">Consider donating to support!</a></b></td>
-    </tr>
-</table>
-
-<p align="center">
-    <img src="favicon.png" alt="Icon" />
-</p>
-=======
 ⚠️ **Project status: maintenance mode**. [What does it mean?](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)
->>>>>>> parent of 1f48818 (Add terms of use):ReadMe.md
 
 **YoutubeExplode** is a library that provides an interface to query metadata of YouTube videos, playlists and channels, as well as to resolve and download video streams and closed caption tracks.
-Behind a layer of abstraction, this library works by scraping raw page data and exploiting reverse-engineered internal endpoints.
+Behind a layer of abstraction, the library parses raw page content and uses reverse-engineered requests to retrieve information.
+As it doesn't rely on the official API, there's also no need for an API key and there are no usage quotas.
 
-<<<<<<< HEAD:Readme.md
-> 📝 Interested in the inner workings of this library?
-> See the [Reverse-Engineering YouTube](https://tyrrrz.me/blog/reverse-engineering-youtube-revisited) article.
-
-**Extension packages**:
-
-- [YoutubeExplode.Converter](YoutubeExplode.Converter) — provides an interface to download and convert videos using FFmpeg
-
-## Terms of use<sup>[[?]](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
-
-By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
-
-- You **condemn Russia and its military aggression against Ukraine**
-- You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
-- You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
-- You **reject false narratives perpetuated by Russian state propaganda**
-
-To learn more about the war and how you can help, [click here](https://tyrrrz.me/ukraine). Glory to Ukraine! 🇺🇦
-=======
 ✨ This library is used in [**YoutubeDownloader**](https://github.com/Tyrrrz/YoutubeDownloader) -- a desktop application for downloading YouTube videos.
 
 💬 **If you want to chat, join my [Discord server](https://discord.gg/2SUWKFnHSm)**.
->>>>>>> parent of 1f48818 (Add terms of use):ReadMe.md
 
-## Install
+## Download
 
-- 📦 [NuGet](https://nuget.org/packages/YoutubeExplode): `dotnet add package YoutubeExplode`
+- 📦 [NuGet](https://nuget.org/packages/YoutubeExplode): `dotnet add package YoutubeExplode` (**main package**)
+- 📦 [NuGet](https://nuget.org/packages/YoutubeExplode.Converter): `dotnet add package YoutubeExplode.Converter` (**FFmpeg integration**)
 
 ## Screenshots
 
-![demo](.assets/demo.png)
+![demo](.screenshots/demo.png)
 
 ## Usage
 
-**YoutubeExplode** exposes its functionality through a single entry point — the `YoutubeClient` class.
+**YoutubeExplode** exposes its functionality through a single entry point -- the `YoutubeClient` class.
 Create an instance of this class and use the provided operations on `Videos`, `Playlists`, `Channels`, and `Search` properties to send requests.
 
 ### Videos
 
 #### Retrieving video metadata
 
-To retrieve the metadata associated with a YouTube video, call `Videos.GetAsync(...)`:
+To retrieve metadata associated with a YouTube video, call `Videos.GetAsync(...)`:
 
 ```csharp
 using YoutubeExplode;
 
 var youtube = new YoutubeClient();
 
-// You can specify either the video URL or its ID
-var videoUrl = "https://youtube.com/watch?v=u_yIGGhubZs";
-var video = await youtube.Videos.GetAsync(videoUrl);
+// You can specify both video ID or URL
+var video = await youtube.Videos.GetAsync("https://youtube.com/watch?v=u_yIGGhubZs");
 
 var title = video.Title; // "Collections - Blender 2.80 Fundamentals"
-var author = video.Author.ChannelTitle; // "Blender"
+var author = video.Author.Title; // "Blender"
 var duration = video.Duration; // 00:07:20
 ```
 
 #### Downloading video streams
 
-Every YouTube video has a number of streams available, differing in containers, video quality, bitrate, framerate, and other parameters.
-Additionally, the streams are further divided into 3 categories based on their content:
+Every YouTube video has a number of streams available, differing in containers, video quality, bitrate, framerate, and other properties.
+Additionally, depending on the content of the stream, the streams are further divided into 3 categories:
 
-- Muxed streams — contain both video and audio
-- Audio-only streams — contain only audio
-- Video-only streams — contain only video
-
-> **Warning**:
-> Muxed streams contain both audio and video, but these streams are limited in quality (up to 720p30).
-> To download the video in the highest available quality, you will need to resolve the best audio-only and video-only streams separately and then mux them together.
-> The muxing process can be performed using FFmpeg with the help of the [**YoutubeExplode.Converter**](YoutubeExplode.Converter) package.
+- Muxed streams -- contain both video and audio
+- Audio-only streams -- contain only audio
+- Video-only streams -- contain only video
 
 You can request the manifest that lists all available streams for a particular video by calling `Videos.Streams.GetManifestAsync(...)`:
 
@@ -104,11 +66,10 @@ using YoutubeExplode;
 
 var youtube = new YoutubeClient();
 
-var videoUrl = "https://youtube.com/watch?v=u_yIGGhubZs";
-var streamManifest = await youtube.Videos.Streams.GetManifestAsync(videoUrl);
+var streamManifest = await youtube.Videos.Streams.GetManifestAsync("u_yIGGhubZs");
 ```
 
-Once the manifest is obtained, you can filter through the streams and identify the ones you're interested in:
+Once you get the manifest, you can filter through the streams and select the ones you're interested in:
 
 ```csharp
 using YoutubeExplode;
@@ -141,9 +102,70 @@ var stream = await youtube.Videos.Streams.GetAsync(streamInfo);
 await youtube.Videos.Streams.DownloadAsync(streamInfo, $"video.{streamInfo.Container}");
 ```
 
-> **Warning**:
-> While the `Url` property in the stream metadata can be used to access the underlying content, you need a series of carefully crafted HTTP requests in order to do so.
-> It's highly recommended to use `Videos.Streams.GetAsync(...)` or `Videos.Streams.DownloadAsync(...)` instead, as they will perform all the heavy lifting for you.
+> ⚠ Muxed streams contain both audio and video, but these streams are very limited in quality (up to 720p30).
+To download video in the highest available quality, you need to resolve the best audio-only and video-only streams separately and then mux them together.
+This can be accomplished by using the **YoutubeExplode.Converter** package (see below).
+
+#### Downloading video with muxing or conversion
+
+> ⚠ Downloading with muxing or conversion requires [YoutubeExplode.Converter](https://nuget.org/packages/YoutubeExplode.Converter).
+
+> ⚠ This package also relies on [FFmpeg](https://ffmpeg.org) CLI, which can be downloaded [here](https://ffbinaries.com/downloads).
+Ensure that the FFmpeg binary is located in your application's probe directory or on the system's `PATH`, or use one of the overloads to provide a custom location directly.
+
+You can download a video with muxing or conversion through one of the extension methods provided on `VideoClient`.
+For example, to download a video in the specified format using highest quality streams, simply call `DownloadAsync(...)` with the video ID and the destination file path:
+
+```csharp
+using YoutubeExplode;
+using YoutubeExplode.Converter;
+
+var youtube = new YoutubeClient();
+await youtube.Videos.DownloadAsync("https://youtube.com/watch?v=u_yIGGhubZs", "video.mp4");
+```
+
+Under the hood, this resolves the video's media streams and selects the best candidates based on format, bitrate, quality, and framerate.
+If the specified output format is a known audio-only container (e.g. `mp3` or `ogg`) then only the audio stream is downloaded.
+
+> ⚠ Stream muxing is a CPU-heavy process.
+> You can reduce resource usage and execution time by using streams that don't require transcoding to the output format (e.g. `mp4` audio/video streams for `mp4` output format).
+> Currently, YouTube only provides adaptive streams in `mp4` or `webm` containers, with highest quality video streams (e.g. 4K) only available in `webm`.
+
+To configure various aspects related to the conversion process, use one of the overloads of `DownloadAsync(...)`:
+
+```csharp
+using YoutubeExplode;
+using YoutubeExplode.Converter;
+
+var youtube = new YoutubeClient();
+
+await youtube.Videos.DownloadAsync("https://youtube.com/watch?v=u_yIGGhubZs", "video.mp4", o => o
+    .SetFormat("webm") // override format
+    .SetPreset(ConversionPreset.UltraFast) // change preset
+    .SetFFmpegPath("path/to/ffmpeg") // custom FFmpeg location
+);
+```
+
+If you need precise control over which streams are used for muxing, you can also provide them yourself:
+
+```csharp
+using YoutubeExplode;
+using YoutubeExplode.Videos.Streams;
+using YoutubeExplode.Converter;
+
+var youtube = new YoutubeClient();
+
+// Get stream manifest
+var streamManifest = await youtube.Videos.Streams.GetManifestAsync("u_yIGGhubZs");
+
+// Select streams (1080p60 / highest bitrate audio)
+var audioStreamInfo = streamManifest.GetAudioStreams().GetWithHighestBitrate();
+var videoStreamInfo = streamManifest.GetVideoStreams().First(s => s.VideoQuality.Label == "1080p60");
+var streamInfos = new IStreamInfo[] { audioStreamInfo, videoStreamInfo };
+
+// Download and process them into one file
+await youtube.Videos.DownloadAsync(streamInfos, new ConversionRequestBuilder("video.mp4").Build());
+```
 
 #### Downloading closed captions
 
@@ -155,11 +177,10 @@ using YoutubeExplode;
 
 var youtube = new YoutubeClient();
 
-var videoUrl = "https://youtube.com/watch?v=u_yIGGhubZs";
-var trackManifest = await youtube.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
+var trackManifest = await youtube.Videos.ClosedCaptions.GetManifestAsync("u_yIGGhubZs");
 ```
 
-Then retrieve the metadata for a particular track:
+Then retrieve metadata for a particular track:
 
 ```csharp
 // ...
@@ -180,7 +201,7 @@ var caption = track.GetByTime(TimeSpan.FromSeconds(35));
 var text = caption.Text; // "collection acts as the parent collection"
 ```
 
-You can also download the closed caption track in the SRT file format with `Videos.ClosedCaptions.DownloadAsync(...)`:
+You can also download the closed caption track in SRT file format with `Videos.ClosedCaptions.DownloadAsync(...)`:
 
 ```csharp
 // ...
@@ -192,21 +213,20 @@ await youtube.Videos.ClosedCaptions.DownloadAsync(trackInfo, "cc_track.srt");
 
 #### Retrieving playlist metadata
 
-You can get the metadata associated with a YouTube playlist by calling the `Playlists.GetAsync(...)` method:
+You can get metadata associated with a YouTube playlist by calling `Playlists.GetAsync(...)` method:
 
 ```csharp
 using YoutubeExplode;
 
 var youtube = new YoutubeClient();
 
-var playlistUrl = "https://youtube.com/playlist?list=PLa1F2ddGya_-UvuAqHAksYnB0qL9yWDO6";
-var playlist = await youtube.Playlists.GetAsync(playlistUrl);
+var playlist = await youtube.Playlists.GetAsync("PLa1F2ddGya_-UvuAqHAksYnB0qL9yWDO6");
 
 var title = playlist.Title; // "First Steps - Blender 2.80 Fundamentals"
-var author = playlist.Author.ChannelTitle; // "Blender"
+var author = playlist.Author.Title; // "Blender"
 ```
 
-#### Retrieving videos included in a playlist
+#### Getting videos included in a playlist
 
 To get the videos included in a playlist, call `Playlists.GetVideosAsync(...)`:
 
@@ -215,24 +235,24 @@ using YoutubeExplode;
 using YoutubeExplode.Common;
 
 var youtube = new YoutubeClient();
-var playlistUrl = "https://youtube.com/playlist?list=PLa1F2ddGya_-UvuAqHAksYnB0qL9yWDO6";
 
 // Get all playlist videos
-var videos = await youtube.Playlists.GetVideosAsync(playlistUrl);
+var videos = await youtube.Playlists.GetVideosAsync("PLa1F2ddGya_-UvuAqHAksYnB0qL9yWDO6");
 
 // Get only the first 20 playlist videos
-var videosSubset = await youtube.Playlists.GetVideosAsync(playlistUrl).CollectAsync(20);
+var videosSubset = await youtube.Playlists
+    .GetVideosAsync(playlist.Id)
+    .CollectAsync(20);
 ```
 
-You can also enumerate the videos iteratively without waiting for the whole list to load:
+You can also enumerate videos lazily without waiting for the whole list to load:
 
 ```csharp
 using YoutubeExplode;
 
 var youtube = new YoutubeClient();
-var playlistUrl = "https://youtube.com/playlist?list=PLa1F2ddGya_-UvuAqHAksYnB0qL9yWDO6";
 
-await foreach (var video in youtube.Playlists.GetVideosAsync(playlistUrl))
+await foreach (var video in youtube.Playlists.GetVideosAsync("PLa1F2ddGya_-UvuAqHAksYnB0qL9yWDO6"))
 {
     var title = video.Title;
     var author = video.Author;
@@ -245,10 +265,9 @@ If you need precise control over how many requests you send to YouTube, use `Pla
 using YoutubeExplode;
 
 var youtube = new YoutubeClient();
-var playlistUrl = "https://youtube.com/playlist?list=PLa1F2ddGya_-UvuAqHAksYnB0qL9yWDO6";
 
 // Each batch corresponds to one request
-await foreach (var batch in youtube.Playlists.GetVideoBatchesAsync(playlistUrl))
+await foreach (var batch in youtube.Playlists.GetVideoBatchesAsync("PLa1F2ddGya_-UvuAqHAksYnB0qL9yWDO6"))
 {
     foreach (var video in batch.Items)
     {
@@ -258,84 +277,51 @@ await foreach (var batch in youtube.Playlists.GetVideoBatchesAsync(playlistUrl))
 }
 ```
 
-> **Note**:
-> You can craft playlist IDs to fetch special auto-generated playlists, such as music mixes, popular channel uploads, liked videos, and more.
-> See [this reference](https://wiki.archiveteam.org/index.php/YouTube/Technical_details#Playlists) for more information.
-
 ### Channels
 
 #### Retrieving channel metadata
 
-You can get the metadata associated with a YouTube channel by calling the `Channels.GetAsync(...)` method:
+You can get metadata associated with a YouTube channel by calling `Channels.GetAsync(...)` method:
 
 ```csharp
 using YoutubeExplode;
 
 var youtube = new YoutubeClient();
 
-var channelUrl = "https://youtube.com/channel/UCSMOQeBJ2RAnuFungnQOxLg";
-var channel = await youtube.Channels.GetAsync(channelUrl);
+var channel = await youtube.Channels.GetAsync("UCSMOQeBJ2RAnuFungnQOxLg");
 
 var title = channel.Title; // "Blender"
 ```
 
-You can also get the channel metadata by username or profile URL with `Channels.GetByUserAsync(...)`:
+You can also get channel metadata by username with `Channels.GetByUserAsync(...)`:
 
 ```csharp
 using YoutubeExplode;
 
 var youtube = new YoutubeClient();
 
-var channelUrl = "https://youtube.com/user/BlenderFoundation";
-var channel = await youtube.Channels.GetByUserAsync(channelUrl);
+var channel = await youtube.Channels.GetByUserAsync("Blender");
 
 var id = channel.Id; // "UCSMOQeBJ2RAnuFungnQOxLg"
 ```
 
-To get the channel metadata by slug or legacy custom URL, use `Channels.GetBySlugAsync(...)`:
+#### Getting channel uploads
 
-```csharp
-using YoutubeExplode;
-
-var youtube = new YoutubeClient();
-
-var channelUrl = "https://youtube.com/c/BlenderFoundation";
-var channel = await youtube.Channels.GetBySlugAsync(channelUrl);
-
-var id = channel.Id; // "UCSMOQeBJ2RAnuFungnQOxLg"
-```
-
-To get the channel metadata by handle or custom URL, use `Channels.GetByHandleAsync(...)`:
-
-```csharp
-using YoutubeExplode;
-
-var youtube = new YoutubeClient();
-
-var channelUrl = "https://youtube.com/@BeauMiles";
-var channel = await youtube.Channels.GetByHandleAsync(channelUrl);
-
-var id = channel.Id; // "UCm325cMiw9B15xl22_gr6Dw"
-```
-
-#### Retrieving channel uploads
-
-To get the list of videos uploaded by a channel, call `Channels.GetUploadsAsync(...)`:
+To get a list of videos uploaded by a channel, call `Channels.GetUploadsAsync(...)`:
 
 ```csharp
 using YoutubeExplode;
 using YoutubeExplode.Common;
 
 var youtube = new YoutubeClient();
-var channelUrl = "https://youtube.com/channel/UCSMOQeBJ2RAnuFungnQOxLg";
 
-var videos = await youtube.Channels.GetUploadsAsync(channelUrl);
+var videos = await youtube.Channels.GetUploadsAsync("UCSMOQeBJ2RAnuFungnQOxLg");
 ```
 
-### Search
+### Searching
 
-You can execute a search query by calling the `Search.GetResultsAsync(...)` method.
-Each search result may represent either a video, a playlist, or a channel, so you need to apply pattern matching to handle the corresponding cases:
+You can execute a search query and get its results by calling `Search.GetResultsAsync(...)`.
+Each result may represent either a video, a playlist, or a channel, so you need to apply pattern matching to handle the corresponding cases:
 
 ```csharp
 using YoutubeExplode;
@@ -370,7 +356,7 @@ await foreach (var result in youtube.Search.GetResultsAsync("blender tutorials")
 }
 ```
 
-To limit the results to a specific type, use `Search.GetVideosAsync(...)`, `Search.GetPlaylistsAsync(...)`, or `Search.GetChannelsAsync(...)`:
+To limit results to a specific type, use `Search.GetVideosAsync(...)`, `Search.GetPlaylistsAsync(...)`, or `Search.GetChannelsAsync(...)`:
 
 ```csharp
 using YoutubeExplode;
@@ -414,23 +400,6 @@ await foreach (var batch in youtube.Search.GetResultBatchesAsync("blender tutori
 }
 ```
 
-### Authentication
-
-You can access private videos and playlists by providing cookies that correspond to a pre-authenticated YouTube account.
-To do that, create an instance of `YoutubeClient` using a constructor that accepts `IReadOnlyList<Cookie>`:
-
-```csharp
-using YoutubeExplode;
-
-// Perform authentication and extract cookies
-var cookies = ...;
-
-// Cookie collection must be of type IReadOnlyList<System.Net.Cookie>
-var youtube = new YoutubeClient(cookies);
-```
-
-In order to actually perform the authentication, you can use an embedded browser such as [WebView](https://nuget.org/packages/Microsoft.Web.WebView2) to navigate the user to the [YouTube login page](https://accounts.google.com/ServiceLogin?continue=https%3A%2F%2Fwww.youtube.com), let them log in, and then extract the cookies from the browser.
-
 ## Etymology
 
-The "Explode" in **YoutubeExplode** comes from the name of a PHP function that splits up strings, [`explode(...)`](https://php.net/manual/en/function.explode.php). When I was starting the development of this library, most of the reference source code I read was written in PHP, hence the inspiration for the name.
+The "Explode" in **YoutubeExplode** comes from the name of a PHP function that splits up strings, [`explode()`](https://www.php.net/manual/en/function.explode.php). When I was just starting development on this library, most of the reference source code I read was written in PHP, hence the inspiration for the name.
