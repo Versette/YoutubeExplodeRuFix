@@ -9,10 +9,13 @@
     <PackageIcon>favicon.png</PackageIcon>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+<<<<<<< HEAD
 
   <ItemGroup>
     <None Include="../favicon.png" Pack="true" PackagePath="" Visible="false" />
   </ItemGroup>
+=======
+>>>>>>> parent of d1489ee (Implement sanctions, validated during build)
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="1.1.2" />
