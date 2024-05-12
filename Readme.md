@@ -9,6 +9,7 @@
 [![Discord](https://img.shields.io/discord/869237470565392384?label=discord)](https://discord.gg/2SUWKFnHSm)
 [![Fuck Russia](https://img.shields.io/badge/fuck-russia-e4181c.svg?labelColor=000000)](https://twitter.com/tyrrrz/status/1495972128977571848)
 
+<<<<<<< HEAD:Readme.md
 <table>
     <tr>
         <td width="99999" align="center">Development of this project is entirely funded by the community. <b><a href="https://tyrrrz.me/donate">Consider donating to support!</a></b></td>
@@ -18,10 +19,14 @@
 <p align="center">
     <img src="favicon.png" alt="Icon" />
 </p>
+=======
+⚠️ **Project status: maintenance mode**. [What does it mean?](https://github.com/Tyrrrz/.github/blob/master/docs/project-status.md)
+>>>>>>> parent of 1f48818 (Add terms of use):ReadMe.md
 
 **YoutubeExplode** is a library that provides an interface to query metadata of YouTube videos, playlists and channels, as well as to resolve and download video streams and closed caption tracks.
 Behind a layer of abstraction, this library works by scraping raw page data and exploiting reverse-engineered internal endpoints.
 
+<<<<<<< HEAD:Readme.md
 > 📝 Interested in the inner workings of this library?
 > See the [Reverse-Engineering YouTube](https://tyrrrz.me/blog/reverse-engineering-youtube-revisited) article.
 
@@ -39,6 +44,11 @@ By using this project or its source code, for any purpose and in any shape or fo
 - You **reject false narratives perpetuated by Russian state propaganda**
 
 To learn more about the war and how you can help, [click here](https://tyrrrz.me/ukraine). Glory to Ukraine! 🇺🇦
+=======
+✨ This library is used in [**YoutubeDownloader**](https://github.com/Tyrrrz/YoutubeDownloader) -- a desktop application for downloading YouTube videos.
+
+💬 **If you want to chat, join my [Discord server](https://discord.gg/2SUWKFnHSm)**.
+>>>>>>> parent of 1f48818 (Add terms of use):ReadMe.md
 
 ## Install
 
